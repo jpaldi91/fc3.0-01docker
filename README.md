@@ -57,5 +57,5 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
 
 1. Install the same Linux distro in your WSL again
 2. Create a user with the same credentials as before
-3. Run `wsl —shutdown` in Powershell
+3. Run `wsl --shutdown` in Powershell
 4. Override the `ext4.vhdx` file that was just now created created for the file you saved before
