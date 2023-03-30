@@ -59,3 +59,52 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
 2. Create a user with the same credentials as before
 3. Run `wsl --shutdown` in Powershell
 4. Override the `ext4.vhdx` file that was just now created created for the file you saved before
+
+## The Hello World image
+
+<details> 
+<summary>When running <code style="white-space:nowrap;">docker run hello-world</code>, Docker tried to run an image called <code style="white-space:nowrap;">hello-world</code> that wasn’t found locally, then it pulled that image from the library. After the new image was downloaded, it printed some text as it was defined in the image.</summary>
+  
+    Unable to find image 'hello-world:latest' locally
+    latest: Pulling from library/hello-world
+    2db29710123e: Pull complete
+    Digest: sha256:ffb13da98453e0f04d33a6eee5bb8e46ee50d08ebe17735fc0779d0349e889e9
+    Status: Downloaded newer image for hello-world:latest
+    
+    Hello from Docker!
+    This message shows that your installation appears to be working correctly.
+    
+    To generate this message, Docker took the following steps:
+     1. The Docker client contacted the Docker daemon.
+     2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+        (amd64)
+     3. The Docker daemon created a new container from that image which runs the
+        executable that produces the output you are currently reading.
+     4. The Docker daemon streamed that output to the Docker client, which sent it
+        to your terminal.
+    
+    To try something more ambitious, you can run an Ubuntu container with:
+     $ docker run -it ubuntu bash
+    
+    Share images, automate workflows, and more with a free Docker ID:
+     https://hub.docker.com/
+    
+    For more examples and ideas, visit:
+     https://docs.docker.com/get-started/
+  
+</details>
+
+<details> 
+<summary><code style="white-space:nowrap;">docker ps</code> shows the running containers’ information. However, since the <code style="white-space:nowrap;">hello-world</code> has already exited, it won’t appear in this command’s output</summary>
+  
+    CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
+  
+</details>
+
+<details> 
+<summary>Run <code style="white-space:nowrap;">docker ps -a</code> to view <b>all</b> containers (including those which already exited)</summary>
+  
+    CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
+	5b4376984cdc   hello-world   "/hello"   32 minutes ago   Exited (0) 32 minutes ago             funny_jones
+  
+</details>
