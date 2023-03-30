@@ -60,7 +60,8 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
 3. Run `wsl --shutdown` in Powershell
 4. Override the `ext4.vhdx` file that was just now created created for the file you saved before
 
-## The Hello World image
+
+# The Hello World image
 
 <details> 
 <summary>When running <code style="white-space:nowrap;">docker run hello-world</code>, Docker tried to run an image called <code style="white-space:nowrap;">hello-world</code> that wasn’t found locally, then it pulled that image from the library. After the new image was downloaded, it printed some text as it was defined in the image.</summary>
