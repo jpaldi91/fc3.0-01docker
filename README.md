@@ -116,3 +116,102 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
     root@289a8371ff9f:/#
   
 </details>
+
+## Publishing ports with nginx
+
+`docker run nginx` runs the **nginx** (its pronounced Engine X) image and the container behaves like a web server with the port `80` opened for tcp traffic. However, in order to access this port, we need to also **publish** it with the `-p` argument some way like this:
+
+`docker run -p 8080:80 nginx`
+
+This way, docker publishes the port `80` of the container running **nginx** as the port `8080` in the outside machine. So when accessing [localhost:8080](http://localhost:8080) in a browser, here’s what we see:
+
+<p align="center">
+	<img src="https://user-images.githubusercontent.com/17324018/228924429-759b3ead-2008-41eb-a4d7-c8a0d50e7ca2.png" align="center">
+</p>
+
+And also, it is also possible to see several logs in the terminal running this container. However, if we decide to keep using the terminal and let the container running on the background, all that is needed is to add a `-d` argument to run the container detached: `docker run -d -p 8080 nginx`
+
+## Start, Stop and Remove commands
+
+Every time we use the `docker run`, a new container is created and that may be checked using the `docker ps -a` command.
+
+```bash
+CONTAINER ID   IMAGE         COMMAND                  CREATED          STATUS                        PORTS     NAMES
+a9b72512a8e4   nginx         "/docker-entrypoint.…"   26 minutes ago   Exited (0) 11 minutes ago               wonderful_driscoll
+d9141dd55238   nginx         "/docker-entrypoint.…"   39 minutes ago   Exited (0) 27 minutes ago               wonderful_carson
+289a8371ff9f   ubuntu        "bash"                   55 minutes ago   Exited (0) 54 minutes ago               pedantic_williams
+aa0f2e0bb04d   ubuntu        "bash"                   58 minutes ago   Exited (137) 56 minutes ago             busy_robinson
+41439aa71bf5   ubuntu        "bash"                   59 minutes ago   Exited (0) 58 minutes ago               frosty_dijkstra
+52a37b2b3bfa   ubuntu        "bash"                   59 minutes ago   Exited (0) 59 minutes ago               brave_mccarthy
+5b4376984cdc   hello-world   "/hello"                 17 hours ago     Exited (0) 17 hours ago                 funny_jones
+```
+
+If this is unintended and we want to run a previously created container, we can just use `start` instead of `run`, and pass the `CONTAINER ID` or its’ name, instead of the image name, as seen below:
+
+```bash
+jp@G7:~$ docker start a9b72512a8e4
+a9b72512a8e4
+jp@G7:~$ docker start pedantic_williams
+pedantic_williams
+jp@G7:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS          PORTS                                   NAMES
+a9b72512a8e4   nginx     "/docker-entrypoint.…"   31 minutes ago      Up 34 seconds   0.0.0.0:8080->80/tcp, :::8080->80/tcp   wonderful_driscoll
+289a8371ff9f   ubuntu    "bash"                   About an hour ago   Up 4 seconds                                            pedantic_williams
+```
+
+Otherwise, if we want to **stop** or **remove** an existing container in the same way, just typing the desired command `stop` or `rm`:
+
+```bash
+jp@G7:~$ docker stop a9b72512a8e4
+a9b72512a8e4
+jp@G7:~$ docker remove funny_jones
+funny_jones
+jp@G7:~$ docker ps -a
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                           PORTS     NAMES
+a9b72512a8e4   nginx     "/docker-entrypoint.…"   37 minutes ago      Exited (0) About a minute ago              wonderful_driscoll
+d9141dd55238   nginx     "/docker-entrypoint.…"   49 minutes ago      Exited (0) 37 minutes ago                  wonderful_carson
+289a8371ff9f   ubuntu    "bash"                   About an hour ago   Up 5 minutes                               pedantic_williams
+aa0f2e0bb04d   ubuntu    "bash"                   About an hour ago   Exited (137) About an hour ago             busy_robinson
+41439aa71bf5   ubuntu    "bash"                   About an hour ago   Exited (0) About an hour ago               frosty_dijkstra
+52a37b2b3bfa   ubuntu    "bash"                   About an hour ago   Exited (0) About an hour ago               brave_mccarthy
+```
+
+Additionally, it is possible to avoid the created containers having crazy names like “funny_jones” and “frosty_dijkstra” by **naming** the container to be created on the `docker run` command:
+
+```bash
+jp@G7:~$ docker run --name nginx_container -d -p 8080:80 nginx
+a7f30cd1797baf1ae83a71e4ba94ce54b4602fa61c19e68ea4241b8921c7a548
+jp@G7:~$ docker ps
+CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS                                   NAMES
+a7f30cd1797b   nginx     "/docker-entrypoint.…"   5 seconds ago   Up 3 seconds   0.0.0.0:8080->80/tcp, :::8080->80/tcp   nginx_container
+```
+
+## Accessing and changing files inside a container
+
+It is possible to **execute** commands inside an **already running** container using the `docker exec` command:
+
+```bash
+jp@G7:~$ docker exec nginx_container echo 'hi'
+hi
+```
+
+Note that in the same way we called the bash command inside a ubuntu container being created previously, we can execute it in an already running container:
+
+```bash
+jp@G7:~$ docker exec -it nginx_container bash
+root@a7f30cd1797b:/#
+```
+
+Let’s now change the index page we saw earlier when accessing the nginx published port. If you try running a text editor inside the container, you’ll notice it doesn’t have it installed. It also doesn’t have an apt-get cache, so we’ll need to run the following:
+
+```bash
+apt-get update
+apt-get -y install vim
+```
+
+Now, vim is not exactly a simple text editor to use, so I’ll just skip that part and show the result of my new index page published in the port 80 by nginx:
+<p align="center">
+	<img src="https://user-images.githubusercontent.com/17324018/228926073-f67c206d-b11f-4626-88fc-dc4255c7b747.png" align="center">
+</p>
+
+An important note is that Docker images are immutable. Which means that if this container is removed all changes will be lost, even if we create another one using the same image.
