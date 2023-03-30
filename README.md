@@ -215,3 +215,39 @@ Now, vim is not exactly a simple text editor to use, so I’ll just skip that pa
 </p>
 
 An important note is that Docker images are immutable. Which means that if this container is removed all changes will be lost, even if we create another one using the same image.
+
+To prevent work loss in such occasions, it is possible to **bind mount** a folder or a volume when creating a container using the `--mount` arguments like this:
+
+```bash
+jp@G7:~/projects/fc3/01docker$ docker run -d --name nginx -p 8080:80 --mount type=bind,source="$(pwd)/html",target=/usr/share/nginx/html nginx
+08b55f7fddb745bf6929f5e0137d42b3a1c90c210746de66e0b61f7ca13dfdc6
+```
+
+This will mount the `$(pwd)/html` folder in the host machine to the target folder in the container, in a way that both non-Docker processes on the Docker host or a Docker container can modify them at any time.
+<p align="center">
+	<img src="https://user-images.githubusercontent.com/17324018/228943664-20e9368b-a502-4ba3-914f-1a3fc9e56ee0.png" align="center">
+</p>
+
+Another possible solution is to use the `-v` option like this:
+
+`docker run -d -v "$(pwd)"/volume/managed_by_docker:/path/to/folder/inside/container nginx`
+
+This option, as hinted above, will create a `volume` folder with a volume named `managed_by_docker` inside that will be managed by docker itself. Which means non-Docker processes should not modify this part of the filesystem.
+
+## Working with volumes
+
+It is possible to create volumes and mount them in one or several containers.
+
+To **create a volume**, simply type `docker volume create volume_name`
+
+To **list the created volumes**, type `docker volume ls`
+
+To **inspect a specific volume**, type `docker volume inspect volume_name`
+
+Similarly to bind mounting a folder to a container, we can mount a volume using `--mount type=volume source=volume_name` instead of `--mount type=bind,source=/path/to/folder/`
+
+`docker run --name nginx -d --mount type=volume,source=my_volume,target=/app nginx`
+
+This is the same thing as using `docker run --name nginx -d -v volume_name:/app nginx`
+
+To free some disk space and **remove volumes not used**, type: `docker volume prune`
