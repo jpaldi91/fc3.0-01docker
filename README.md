@@ -1,18 +1,18 @@
 # 1 - Docker
 
-# Introduction
+## Introduction
 
-## What is a container?
+### What is a container?
 
 A container is a standard unit of software that packages up code and all its dependencies so the application runs quickly and reliably from one computing environment to another. A Docker container image is a lightweight, standalone, executable package of software that includes everything needed to run an application: code, runtime, system tools, system libraries and settings.
 
 (**source**: [https://www.docker.com/resources/what-container](https://www.docker.com/resources/what-container/)/)
 
-## Dockerfile
+### Dockerfile
 
 A `Dockerfile` is a text document that contains all the commands a user could call on the command line to assemble an image.
 
-Since a new image is always created using a previously existing one, a `Dockerfile` **must begin with a `FROM` instruction**. The `FROM` instruction specifies the Parent Image from which you are building.
+Since a new image is always created using a previously existing one, a `Dockerfile` **must begin with a `FROM` instruction**. The `FROM` instruction specifies the Parent Image from which you are building.
 
 The **`RUN`** instruction is another commonly used one. With it, we have the option to customize an image running commands to install packages or print messages, for example.
 
@@ -21,7 +21,7 @@ It is also possible to expose specific image ports in order to provide access to
 More information on `Dockerfiles` can be found at [here](https://docs.docker.com/engine/reference/builder/).
 
 
-# Installing Docker on a Windows PC
+## Installing Docker on a Windows PC
 
 There is a really good guide in Portuguese to docker installation using WSL-2 [here](https://github.com/codeedu/wsl2-docker-quickstart#docker-engine-docker-nativo-diretamente-instalado-no-wsl2). I followed the steps described starting at **Docker Engine (Native Docker) directly installed in WSL2.**
 
@@ -61,7 +61,7 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
 4. Override the `ext4.vhdx` file that was just now created created for the file you saved before
 
 
-# The Hello World image
+## Basic commands
 
 <details> 
 <summary>When running <code style="white-space:nowrap;">docker run hello-world</code>, Docker tried to run an image called <code style="white-space:nowrap;">hello-world</code> that wasn’t found locally, then it pulled that image from the library. After the new image was downloaded, it printed some text as it was defined in the image.</summary>
@@ -107,5 +107,12 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
   
     CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
 	5b4376984cdc   hello-world   "/hello"   32 minutes ago   Exited (0) 32 minutes ago             funny_jones
+  
+</details>
+
+<details> 
+<summary><code style="white-space:nowrap;">docker run -it ubuntu bash</code> runs with <code style="white-space:nowrap;">-it</code>, or <code style="white-space:nowrap;">-i</code> (interactive, keeps STDIN open even if the terminal is not attached to the container) and <code style="white-space:nowrap;">-t</code> (allocates a pseudo-TTY, which stands for Teletype, enabling basic input-output) parameters the <code style="white-space:nowrap;">ubuntu</code> image and calls the bash command. We can also add <code style="white-space:nowrap;">--rm</code> just before the image name in order to remove the container when it exits.</summary>
+  
+    root@289a8371ff9f:/#
   
 </details>
