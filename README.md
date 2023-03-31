@@ -251,3 +251,23 @@ Similarly to bind mounting a folder to a container, we can mount a volume using 
 This is the same thing as using `docker run --name nginx -d -v volume_name:/app nginx`
 
 To free some disk space and **remove volumes not used**, type: `docker volume prune`
+
+## Working with images
+
+Every time we run a container with an image we don't locally have, docker pulls that image from the container registry and downloads the missing dependencies. When the container registry is not specified in the image name, Docker’s pulls that image from it’s own container registry, which is called DockerHub.
+
+To specify a specific version of an image, we simply need to add `:version-name` after the image name. Until now, we didn’t specify any image version, so by default what is happening is the same thing as if we were typing `:latest` instead of a specific version.
+
+It is also possible to pull an image from the registry without necessarily running a container. For that, we just type `docker pull image:version`
+
+To list all images locally present, just type `docker images`
+
+To remove a local specific image, just type `docker rmi image:version`
+
+## Creating an image with Dockerfile
+
+As mentioned in the beginning of the course, new images are specified creating a `Dockerfile`, which **must begin with a `FROM` instruction**.
+
+In this course, we created an image based on the `nginx:latest` and ran some commands from it. The dockerfile created can be checked out in this repository.
+
+To build an image, just run `docker build -t image_name:tag_name dockerfile_path`
