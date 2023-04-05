@@ -20,7 +20,6 @@ It is also possible to expose specific image ports in order to provide access to
 
 More information on `Dockerfiles` can be found at [here](https://docs.docker.com/engine/reference/builder/).
 
-
 ## Installing Docker on a Windows PC
 
 There is a really good guide in Portuguese to docker installation using WSL-2 [here](https://github.com/codeedu/wsl2-docker-quickstart#docker-engine-docker-nativo-diretamente-instalado-no-wsl2). I followed the steps described starting at **Docker Engine (Native Docker) directly installed in WSL2.**
@@ -60,10 +59,9 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
 3. Run `wsl --shutdown` in Powershell
 4. Override the `ext4.vhdx` file that was just now created created for the file you saved before
 
-
 ## Basic commands
 
-<details> 
+<details>
 <summary>When running <code style="white-space:nowrap;">docker run hello-world</code>, Docker tried to run an image called <code style="white-space:nowrap;">hello-world</code> that wasn’t found locally, then it pulled that image from the library. After the new image was downloaded, it printed some text as it was defined in the image.</summary>
   
     Unable to find image 'hello-world:latest' locally
@@ -95,14 +93,14 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
   
 </details>
 
-<details> 
+<details>
 <summary><code style="white-space:nowrap;">docker ps</code> shows the running containers’ information. However, since the <code style="white-space:nowrap;">hello-world</code> has already exited, it won’t appear in this command’s output</summary>
   
     CONTAINER ID   IMAGE     COMMAND   CREATED   STATUS    PORTS     NAMES
   
 </details>
 
-<details> 
+<details>
 <summary>Run <code style="white-space:nowrap;">docker ps -a</code> to view <b>all</b> containers (including those which already exited)</summary>
   
     CONTAINER ID   IMAGE         COMMAND    CREATED          STATUS                      PORTS     NAMES
@@ -110,7 +108,7 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
   
 </details>
 
-<details> 
+<details>
 <summary><code style="white-space:nowrap;">docker run -it ubuntu bash</code> runs with <code style="white-space:nowrap;">-it</code>, or <code style="white-space:nowrap;">-i</code> (interactive, keeps STDIN open even if the terminal is not attached to the container) and <code style="white-space:nowrap;">-t</code> (allocates a pseudo-TTY, which stands for Teletype, enabling basic input-output) parameters the <code style="white-space:nowrap;">ubuntu</code> image and calls the bash command. We can also add <code style="white-space:nowrap;">--rm</code> just before the image name in order to remove the container when it exits.</summary>
   
     root@289a8371ff9f:/#
@@ -126,7 +124,7 @@ For the steps followed in this document, the `ext4.vhdx` (which is a whole wsl2 
 This way, docker publishes the port `80` of the container running **nginx** as the port `8080` in the outside machine. So when accessing [localhost:8080](http://localhost:8080) in a browser, here’s what we see:
 
 <p align="center">
-	<img src="https://user-images.githubusercontent.com/17324018/228924429-759b3ead-2008-41eb-a4d7-c8a0d50e7ca2.png" align="center">
+    <img src="https://user-images.githubusercontent.com/17324018/228924429-759b3ead-2008-41eb-a4d7-c8a0d50e7ca2.png" align="center">
 </p>
 
 And also, it is also possible to see several logs in the terminal running this container. However, if we decide to keep using the terminal and let the container running on the background, all that is needed is to add a `-d` argument to run the container detached: `docker run -d -p 8080 nginx`
@@ -211,7 +209,7 @@ apt-get -y install vim
 
 Now, vim is not exactly a simple text editor to use, so I’ll just skip that part and show the result of my new index page published in the port 80 by nginx:
 <p align="center">
-	<img src="https://user-images.githubusercontent.com/17324018/228926073-f67c206d-b11f-4626-88fc-dc4255c7b747.png" align="center">
+    <img src="https://user-images.githubusercontent.com/17324018/228926073-f67c206d-b11f-4626-88fc-dc4255c7b747.png" align="center">
 </p>
 
 An important note is that Docker images are immutable. Which means that if this container is removed all changes will be lost, even if we create another one using the same image.
@@ -225,7 +223,7 @@ jp@G7:~/projects/fc3/01docker$ docker run -d --name nginx -p 8080:80 --mount typ
 
 This will mount the `$(pwd)/html` folder in the host machine to the target folder in the container, in a way that both non-Docker processes on the Docker host or a Docker container can modify them at any time.
 <p align="center">
-	<img src="https://user-images.githubusercontent.com/17324018/228943664-20e9368b-a502-4ba3-914f-1a3fc9e56ee0.png" align="center">
+    <img src="https://user-images.githubusercontent.com/17324018/228943664-20e9368b-a502-4ba3-914f-1a3fc9e56ee0.png" align="center">
 </p>
 
 Another possible solution is to use the `-v` option like this:
@@ -268,6 +266,29 @@ To remove a local specific image, just type `docker rmi image:version`
 
 As mentioned in the beginning of the course, new images are specified creating a `Dockerfile`, which **must begin with a `FROM` instruction**.
 
-In this course, we created an image based on the `nginx:latest` and ran some commands from it. The dockerfile created can be checked out in this repository.
+In this course, we created an image based on the `nginx:latest` and ran some commands from it. The dockerfile created can be checked out in the `nginx_with_vim\` directory of this repository.
 
 To build an image, just run `docker build -t image_name:tag_name dockerfile_path`
+
+## CMD vs ENTRYPOINT
+
+### CMD
+
+**`CMD`** is a command that can be specified in a **Dockerfile** that will run by default in the container created from it. However, these will not run if the command to run the container gets an argument to run something else.
+
+<details>
+<summary>For example, taking the specified docker file below</summary>
+  
+    FROM ubuntu:latest
+
+    CMD [ "echo", "Hello World" ]
+  
+</details>
+
+Supposing an image was created from this with the name `hello` and we run the command `docker run --rm hello`, the output will be `Hello World`.
+
+However, if we run `docker run --rm hello echo "Something Else"` the output will be `Something Else`. Moreover, if we run `docker run --rm -it hello bash`, there will be no output and the terminal will be hanging in the container's bash instead. In other words, everything passed after the image name on the `docker run` command will run in the container instead of what has been specified in the Dockerfile.
+
+### ENTRYPOINT
+
+**`ENTRYPOINT`** is used in Dockerfile to specify fixed commands to run in the container, with the option to run that command with additional arguments or specific options. The Dockerfile in the `hello\` directory ilustrates this. If the image `hello` is now built from that and a container is created from it without additional arguments, the output will be `Hello World` by default. But if we run `docker run --rm hello "JP"`, the output will be `Hello JP` instead.
