@@ -268,7 +268,7 @@ As mentioned in the beginning of the course, new images are specified creating a
 
 In this course, we created an image based on the `nginx:latest` and ran some commands from it. The dockerfile created can be checked out in the `nginx_with_vim\` directory of this repository.
 
-To build an image, just run `docker build -t image_name:tag_name dockerfile_path`
+To build an image, just run `docker build -t docker_username/image_name:tag_name dockerfile_path`
 
 ## CMD vs ENTRYPOINT
 
@@ -295,4 +295,11 @@ However, if we run `docker run --rm hello echo "Something Else"` the output will
 
 So, in order to make sure if something can be passed as argument when creating a container, we can check out the Dockerfile of the image being used. If you don't have the Dockerfile locally, the container registry (e.g. DockerHub) would be a great place to start your search.
 
-💡 **Note:** It is common to make a `.sh` file to be set as the entrypoint of a Dockerfile. In these cases, if something is required to be passed as an argument to that entrypoint or to something else run besides it, the `.sh` file must end with `exec "$@"`. More explanation can be found [here](https://unix.stackexchange.com/questions/466999/what-does-exec-do) and [also here](https://stackoverflow.com/questions/39082768/what-does-set-e-and-exec-do-for-docker-entrypoint-scripts).
+💡 **Note:** It is common to make a `.sh` file to be set as the entrypoint of a Dockerfile. In these cases, if something is required to be passed as an argument to that entrypoint or something else run besides it, the `.sh` file must end with `exec "$@"`. More explanation can be found [here](https://unix.stackexchange.com/questions/466999/what-does-exec-do) and [also here](https://stackoverflow.com/questions/39082768/what-does-set-e-and-exec-do-for-docker-entrypoint-scripts).
+
+## Publishing an image on DockerHub
+
+1. Build your image `docker build -t docker_username/image_name:tag_name dockerfile_path`
+2. create account on dockerhub
+3. `docker login`
+4. `docker push docker_username/image_name`
