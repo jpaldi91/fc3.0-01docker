@@ -292,3 +292,7 @@ However, if we run `docker run --rm hello echo "Something Else"` the output will
 ### ENTRYPOINT
 
 **`ENTRYPOINT`** is used in Dockerfile to specify fixed commands to run in the container, with the option to run that command with additional arguments or specific options. The Dockerfile in the `hello\` directory ilustrates this. If the image `hello` is now built from that and a container is created from it without additional arguments, the output will be `Hello World` by default. But if we run `docker run --rm hello "JP"`, the output will be `Hello JP` instead.
+
+So, in order to make sure if something can be passed as argument when creating a container, we can check out the Dockerfile of the image being used. If you don't have the Dockerfile locally, the container registry (e.g. DockerHub) would be a great place to start your search.
+
+💡 **Note:** It is common to make a `.sh` file to be set as the entrypoint of a Dockerfile. In these cases, if something is required to be passed as an argument to that entrypoint or to something else run besides it, the `.sh` file must end with `exec "$@"`. More explanation can be found [here](https://unix.stackexchange.com/questions/466999/what-does-exec-do) and [also here](https://stackoverflow.com/questions/39082768/what-does-set-e-and-exec-do-for-docker-entrypoint-scripts).
