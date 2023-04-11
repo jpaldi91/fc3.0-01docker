@@ -291,7 +291,7 @@ However, if we run `docker run --rm hello echo "Something Else"` the output will
 
 ### ENTRYPOINT
 
-**`ENTRYPOINT`** is used in Dockerfile to specify fixed commands to run in the container, with the option to run that command with additional arguments or specific options. The Dockerfile in the `hello\` directory ilustrates this. If the image `hello` is now built from that and a container is created from it without additional arguments, the output will be `Hello World` by default. But if we run `docker run --rm hello "JP"`, the output will be `Hello JP` instead.
+**`ENTRYPOINT`** is used in Dockerfile to specify fixed commands to run in the container, with the option to run that command with additional arguments or specific options. The Dockerfile in the `hello\` directory illustrates this. If the image `hello` is now built from that and a container is created from it without additional arguments, the output will be `Hello World` by default. But if we run `docker run --rm hello "JP"`, the output will be `Hello JP` instead.
 
 So, in order to make sure if something can be passed as argument when creating a container, we can check out the Dockerfile of the image being used. If you don't have the Dockerfile locally, the container registry (e.g. DockerHub) would be a great place to start your search.
 
@@ -303,3 +303,25 @@ So, in order to make sure if something can be passed as argument when creating a
 2. create account on dockerhub
 3. `docker login`
 4. `docker push docker_username/image_name`
+
+## Networks
+
+### Bridge
+
+Bridge networks are the most commonly network type, and it enables a container to easily communicate with another one.
+
+### Host
+
+Host networks merges container's and the host's networks. Which means that a container in a host network is able to access a port in the host's network. In other words, the container and the host machine are in the same network, so it's not necessary to expose a port in the container in order to access it in the host machine.
+
+### Overlay
+
+Overlay networks are typically used when there is the need to make containers in different host machines to simulate they are in the same network. A relatively common use case for this is the Docker Swarm, which can create a cluster with several containers in order to scale in application horizontally. For these containers to be able to communicate with each other, they need to be in an overlay network.
+
+### MacVLAN
+
+This basically sets a MAC address to a container in order to simulate it as a physical network interface directly connected to the host machine
+
+### None
+
+Containers can run totally isolated with no network at all.
