@@ -427,3 +427,12 @@ Containers can run totally isolated with no network at all.
 ### Installing a framework inside a container
 
 In the `laravel` directory of this repository, there's a Dockerfile in which an image based on `php:7.4-cli` was created. From it, `libzip-dev` was installed and also the `zip` php extension, as well as the composer package manager. The laravel php framework was also installed and a basic project to show the laravel homepage was set to be served in the entrypoint. More details and explanations can be checked out in `laravel/Dockerfile`.
+
+### Creating a Node.js application without Node in the host machine
+
+1. For this small project a `node` folder was created and everything was ran from inside it
+2. <details><summary>Along with other options, a <code>node:15</code> container was created running bash with the port <code>3000</code> exposed and mount the <code>node</code> folder mounted at <code>/usr/src/app</code></summary>docker run --rm -it -v $(pwd)/:/usr/src/app -p 3000:3000 node:15 bash</details>
+3. <details><summary>Then, the some npm commands to generate an initial project and install the npm express package</summary>npm init<br>npm install express --save</details>
+4. After that, a sample `index.js` was created and the command `node index.js` was ran.
+
+The result of these steps is that a `node.js` project is running inside a container, even though it is not installed in the host machine. However, we to not have a Dockerfile or an image created for this yet, which is exactly what we'll do next.
