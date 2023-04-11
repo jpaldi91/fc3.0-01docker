@@ -306,9 +306,94 @@ So, in order to make sure if something can be passed as argument when creating a
 
 ## Networks
 
+Type command `docker network` to check out network management commands Docker have available.
+
+* connect     Connect a container to a network
+* create      Create a network
+* disconnect  Disconnect a container from a network
+* inspect     Display detailed information on one or more networks
+* ls          List networks
+* prune       Remove all unused networks
+* rm          Remove one or more networks
+
 ### Bridge
 
 Bridge networks are the most commonly network type, and it enables a container to easily communicate with another one.
+Let's create two detached containers from the `bash` image and inspect the bridge network with them running.
+
+```bash
+docker run -d -it --name ubuntu1 bash
+docker run -d -it --name ubuntu2 bash
+docker network inspect bridge
+```
+
+<details>
+<summary>This outputs a <code>json<code> string, and its <code>"Containers"</code> key, we can check out the containers just created: </summary>
+  
+    "Containers": {
+            "20d389feee553ff326ec982ce50bf2a93d8d69ddf7eccb5f36c6b5d5347d42a4": {
+                "Name": "ubuntu1",
+                "EndpointID": "e59aebb3189a30269acbbe9bd13717eea1d895f2854a68b44caa72a44f6feac4",
+                "MacAddress": "02:42:ac:11:00:02",
+                "IPv4Address": "172.17.0.2/16",
+                "IPv6Address": ""
+            },
+            "907f035b0a88ea14c0a5f0ba4b2267478f6b96b71b4187a87bf9fca972f9e220": {
+                "Name": "ubuntu2",
+                "EndpointID": "c615d5d16310e682254a58c3d435d8458e16e30a2da6e34fda02b0b2c16e2e76",
+                "MacAddress": "02:42:ac:11:00:03",
+                "IPv4Address": "172.17.0.3/16",
+                "IPv6Address": ""
+            }
+        }
+  
+</details>
+
+Knowing the containers' ip addresses, it is now possible to attach the terminal to one of them in ping the other, like this:
+
+```bash
+bash-5.2# ping 172.17.0.3
+PING 172.17.0.3 (172.17.0.3): 56 data bytes
+64 bytes from 172.17.0.3: seq=0 ttl=64 time=0.062 ms
+64 bytes from 172.17.0.3: seq=1 ttl=64 time=0.047 ms
+64 bytes from 172.17.0.3: seq=2 ttl=64 time=0.049 ms
+```
+
+However, `ubuntu1` does not have name to ip resolution yet. So it is not possible to run `ping ubuntu2` for example. We'll solve this manually creating a bridge network:
+
+```bash
+$ docker network create --driver bridge my_network
+69336ad20db2a75b6a97a6fe778a7a9773322187bcc7d8b528a94b9e53d6ed6c
+```
+
+After that, we can recreate the `ubuntu1` and `ubuntu2` bash containers, this time setting it to the `my_network` just we created just now. After that, we'll attach the terminal to `ubuntu1` and ping ubuntu2, this time using it's name instead of the IP address.
+
+```bash
+$ docker run -dit --name ubuntu1 --network my_network bash
+a4fc8c72797d5d4eb6323dfd13052440e0814ac4bb94fedbba6c61930fab9bdf
+$ docker run -dit --name ubuntu2 --network my_network bash
+f5acca00a1c9f5ddaea6b79ba2bb912cec4e67d71b3dd2d340060a2f461c172b
+$ docker exec -it ubuntu1 bash
+bash-5.2# ping ubuntu2
+PING ubuntu2 (172.18.0.2): 56 data bytes
+64 bytes from 172.18.0.2: seq=0 ttl=64 time=0.074 ms
+64 bytes from 172.18.0.2: seq=1 ttl=64 time=0.056 ms
+64 bytes from 172.18.0.2: seq=2 ttl=64 time=0.051 ms
+```
+
+On the other hand, if we now create an `ubuntu3` bash container with no network options, it'll be put by default in the `bridge` network instead of `my_network`. Because of this, it won't be able to ping neither `ubuntu1` or `ubuntu2`.
+
+To mitigate this, it is possible to set a new network for a container like this:
+
+```bash
+$ docker network connect my_network ubuntu3
+$ docker exec -it ubuntu3 bash
+bash-5.2# ping ubuntu2
+PING ubuntu2 (172.18.0.2): 56 data bytes
+64 bytes from 172.18.0.2: seq=0 ttl=64 time=0.057 ms
+64 bytes from 172.18.0.2: seq=1 ttl=64 time=0.052 ms
+64 bytes from 172.18.0.2: seq=2 ttl=64 time=0.051 ms
+```
 
 ### Host
 
