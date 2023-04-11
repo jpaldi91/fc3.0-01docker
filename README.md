@@ -295,7 +295,7 @@ However, if we run `docker run --rm hello echo "Something Else"` the output will
 
 So, in order to make sure if something can be passed as argument when creating a container, we can check out the Dockerfile of the image being used. If you don't have the Dockerfile locally, the container registry (e.g. DockerHub) would be a great place to start your search.
 
-💡 **Note:** It is common to make a `.sh` file to be set as the entrypoint of a Dockerfile. In these cases, if something is required to be passed as an argument to that entrypoint or something else run besides it, the `.sh` file must end with `exec "$@"`. More explanation can be found [here](https://unix.stackexchange.com/questions/466999/what-does-exec-do) and [also here](https://stackoverflow.com/questions/39082768/what-does-set-e-and-exec-do-for-docker-entrypoint-scripts).
+💡 **Note:** It is common to make a `.sh` file to be set as the entrypoint of a Dockerfile. In these cases, if something is required to be passed as an argument to that entrypoint or something else to run besides it, the `.sh` file must end with `exec "$@"`. More explanation can be found [here](https://unix.stackexchange.com/questions/466999/what-does-exec-do) and [also here](https://stackoverflow.com/questions/39082768/what-does-set-e-and-exec-do-for-docker-entrypoint-scripts).
 
 ## Publishing an image on DockerHub
 
@@ -421,3 +421,9 @@ This basically sets a MAC address to a container in order to simulate it as a ph
 ### None
 
 Containers can run totally isolated with no network at all.
+
+## Practicing
+
+### Installing a framework inside a container
+
+In the `laravel` directory of this repository, there's a Dockerfile in which an image based on `php:7.4-cli` was created. From it, `libzip-dev` was installed and also the `zip` php extension, as well as the composer package manager. The laravel php framework was also installed and a basic project to show the laravel homepage was set to be served in the entrypoint. More details and explanations can be checked out in `laravel/Dockerfile`.
