@@ -359,7 +359,7 @@ PING 172.17.0.3 (172.17.0.3): 56 data bytes
 64 bytes from 172.17.0.3: seq=2 ttl=64 time=0.049 ms
 ```
 
-However, `ubuntu1` does not have name to ip resolution yet. So it is not possible to run `ping ubuntu2` for example. We'll solve this manually creating a bridge network:
+However, `ubuntu1` does not have name to ip resolution yet. So it is not possible to run `ping ubuntu2` for example. We'll solve this by manually creating a bridge network:
 
 ```bash
 $ docker network create --driver bridge my_network
@@ -398,6 +398,17 @@ PING ubuntu2 (172.18.0.2): 56 data bytes
 ### Host
 
 Host networks merges container's and the host's networks. Which means that a container in a host network is able to access a port in the host's network. In other words, the container and the host machine are in the same network, so it's not necessary to expose a port in the container in order to access it in the host machine.
+
+It is also possible for containers to access ports exposed in the host's network. For example, if outside any docker container, in the host machine, we have a php serving that html file from earlier at the port 8080, we can check it in our browsing by accessing `localhost:8080`. But for the container to reach it, we use the `--add-host` option when running the container and type `host.docker.internal` instead of `localhost`. Like this:
+
+```bash
+$ docker run --rm -it --name ubuntu --add-host=host.docker.internal:host-gateway ubuntu bash
+root@0928bd00eb14:/# apt-get update
+root@0928bd00eb14:/# apt-get install curl -y
+root@0928bd00eb14:/# curl http://host.docker.internal:8080
+<h1>This is a custom index file made by JP!</h1>
+<p>This file will not be lost even if the container is removed</p>
+```
 
 ### Overlay
 
