@@ -441,4 +441,5 @@ For this small project a `node` folder was created and everything was ran from i
 
 After that, a sample `index.js` was created and the command `node index.js` was ran.
 
-The result of these steps is that a `node.js` project is running inside a container, even though it is not installed in the host machine. However, we to not have a Dockerfile or an image created for this yet, which is exactly what we'll do next.
+The result of these steps is that a `node.js` project is running inside a container, even though it is not installed in the host machine. However, we to not have a Dockerfile or an image created for this yet, which is actually quite simple. Just check out the Dockerfile created in the `node` folder.
+Also, a `Dockerfile.prod` was created in the same `node` folder, considering a case where the node files didn't exist before. To build an image with this `Dockerfile.prod` instead of the `Dockerfile` tha is used by default, add a `-f file_name` option at the end of the build command, like this: `docker build -t jpaldi/hello-express node/ -f node/Dockerfile.prod`
