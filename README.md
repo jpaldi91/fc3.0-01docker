@@ -328,8 +328,8 @@ docker network inspect bridge
 ```
 
 <details>
-<summary>This outputs a <code>json<code> string, and its <code>"Containers"</code> key, we can check out the containers just created: </summary>
-  
+<summary>This outputs a <code>json</code> string, and its <code>"Containers"</code> key, we can check out the containers just created: </summary>
+
     "Containers": {
             "20d389feee553ff326ec982ce50bf2a93d8d69ddf7eccb5f36c6b5d5347d42a4": {
                 "Name": "ubuntu1",
@@ -346,7 +346,7 @@ docker network inspect bridge
                 "IPv6Address": ""
             }
         }
-  
+	
 </details>
 
 Knowing the containers' ip addresses, it is now possible to attach the terminal to one of them in ping the other, like this:
@@ -366,7 +366,7 @@ $ docker network create --driver bridge my_network
 69336ad20db2a75b6a97a6fe778a7a9773322187bcc7d8b528a94b9e53d6ed6c
 ```
 
-After that, we can recreate the `ubuntu1` and `ubuntu2` bash containers, this time setting it to the `my_network` just we created just now. After that, we'll attach the terminal to `ubuntu1` and ping ubuntu2, this time using it's name instead of the IP address.
+After that, we can recreate the `ubuntu1` and `ubuntu2` bash containers, this time setting it to the `my_network` we created just now. After that, we'll attach the terminal to `ubuntu1` and ping ubuntu2, this time using it's name instead of the IP address.
 
 ```bash
 $ docker run -dit --name ubuntu1 --network my_network bash
