@@ -430,9 +430,15 @@ In the `laravel` directory of this repository, there's a Dockerfile in which an 
 
 ### Creating a Node.js application without Node in the host machine
 
-1. For this small project a `node` folder was created and everything was ran from inside it
-2. <details><summary>Along with other options, a <code>node:15</code> container was created running bash with the port <code>3000</code> exposed and mount the <code>node</code> folder mounted at <code>/usr/src/app</code></summary>docker run --rm -it -v $(pwd)/:/usr/src/app -p 3000:3000 node:15 bash</details>
-3. <details><summary>Then, the some npm commands to generate an initial project and install the npm express package</summary>npm init<br>npm install express --save</details>
-4. After that, a sample `index.js` was created and the command `node index.js` was ran.
+For this small project a `node` folder was created and everything was ran from inside it
+<details><summary>Along with other options, a <code>node:15</code> container was created running bash with the port <code>3000</code> exposed and mount the <code>node</code> folder mounted at <code>/usr/src/app</code></summary><code>docker run --rm -it -v $(pwd)/:/usr/src/app -p 3000:3000 node:15 bash</code></details>
+<details><summary>Then, the some npm commands to generate an initial project and install the npm express package</summary>
+	
+	npm init -y
+	npm install express --save
+	
+</details>
+
+After that, a sample `index.js` was created and the command `node index.js` was ran.
 
 The result of these steps is that a `node.js` project is running inside a container, even though it is not installed in the host machine. However, we to not have a Dockerfile or an image created for this yet, which is exactly what we'll do next.
