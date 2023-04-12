@@ -1,0 +1,47 @@
+# gives an alias to this image state, in order to use it later
+FROM php:7.4-cli AS builder
+
+# sets a working directory
+WORKDIR /var/www
+
+# update apt-get package references,
+# installs lbzip-dev that will be used in a further RUN command and install 
+# installs the zip php extension
+RUN apt-get update && \
+    apt-get install libzip-dev -y && \
+    docker-php-ext-install zip
+
+# sets up the composer package manager for php
+RUN php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" && \
+    php composer-setup.php && \
+    php -r "unlink('composer-setup.php');"
+
+# installs and create a laravel php project
+RUN php composer.phar create-project --prefer-dist laravel/laravel laravel
+
+# runs php laravel/artisan serve. Artisan is the command line interface included with Laravel
+ENTRYPOINT [ "php", "laravel/artisan", "serve" ]
+
+# sets host as localhost by default, instead of 127.0.0.1, which wouldn't be accessible outside the container
+CMD [ "--host=0.0.0.0" ]
+# end of the first state
+
+# beginning of the second state
+FROM php:7.4-fpm-alpine
+
+WORKDIR /var/www
+
+# since we're not interested in the html directory inside /var/www, delete it
+RUN rm -rf /var/www/html
+
+# from the image state 'builder', copies the directory /var/www/laravel to the working directory (/var/www)
+COPY --from=builder /var/www/laravel .
+
+# change ownership (chown) of the /var/www recursively (-r) to the user[:group] www-data:www-data,
+# so the files created in the other build stage can be manipulated by this one and everything without problems
+RUN chown -R www-data:www-data /var/www
+
+# exposes the 9000 port, used by php-fpm
+EXPOSE 9000
+
+CMD [ "php-fpm" ]

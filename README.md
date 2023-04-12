@@ -443,3 +443,17 @@ After that, a sample `index.js` was created and the command `node index.js` was 
 
 The result of these steps is that a `node.js` project is running inside a container, even though it is not installed in the host machine. However, we to not have a Dockerfile or an image created for this yet, which is actually quite simple. Just check out the Dockerfile created in the `node` folder.
 Also, a `Dockerfile.prod` was created in the same `node` folder, considering a case where the node files didn't exist before. To build an image with this `Dockerfile.prod` instead of the `Dockerfile` tha is used by default, add a `-f file_name` option at the end of the build command, like this: `docker build -t jpaldi/hello-express node/ -f node/Dockerfile.prod`
+
+## Optimizing images
+
+### Multistage Building
+
+[Docker documentation](https://docs.docker.com/build/building/multi-stage/) has a blog post discussing about the challenges of building images keeping its size down. It was common to use a builder pattern, which consists in keeping more than one Dockerfile in a project, one with everything needed for development, and a slimmed-down one to use for production, which only contained your application and exactly what was needed to run it.
+In this course, we created a `Dockerfile.prod` in the `laravel` directory as an example of a multi-stage build, which is less failure-prone and easier to maintain, besides reducing the number of images to be maintained and taking space.
+In this repository, both Dockerfiles were kept for comparison purposes. After building the new multi-stage image and naming it as jpaldi/laravel:prod (`docker build -t jpaldi/laravel:prod laravel -f laravel/Dockerfile.prod`), here are the current laravel docker images and their sizes:
+
+```bash
+$ docker images | grep laravel
+jpaldi/laravel          prod      eba7a3cc0f82   3 minutes ago   140MB
+jpaldi/laravel          latest    b810b65df89b   19 hours ago    554MB
+```
